@@ -1,6 +1,8 @@
+# haptic4j
+
 This is a small tool for testing force feedback devices
 similar to fftest(1). It's explicitly for testing of the
-rumble effect at different strength.
+rumble effect at different strength. Reference: https://www.kernel.org/doc/html/latest/input/ff.html
 
 Usage:
 

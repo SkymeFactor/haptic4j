@@ -1,3 +1,7 @@
+# User-defined
+generated/
+classes/
+
 # Prerequisites
 *.d
 
