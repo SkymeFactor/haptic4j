@@ -18,3 +18,6 @@ In destined folder do:
 ```bash
 ./build.sh && ./run.sh
 ```
+
+--- 
+Refer the [sources](./sources.list) for explanation, examples and docs.
