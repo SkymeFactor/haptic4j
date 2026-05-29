@@ -1,5 +1,5 @@
 #pragma once
-#include "events.h"
+#include "haptic_event.h"
 
 
 #ifdef __cplusplus

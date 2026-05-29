@@ -19,7 +19,7 @@
 #include <cstring>
 #include <filesystem>
 
-#include "events.h"
+#include "haptic_event.h"
 
 
 
@@ -90,61 +90,61 @@ class Rumbler {
         effect.replay.delay = 0;
         auto callback = req.callback; // might change when we awake
 
-        auto device_file_name = findEventPathByJsNumber(req.joyDevice);
-        if (!device_file_name.has_value()) {
-            std::cerr << "could not find events for device "
-                      << req.joyDevice
-                      << std::endl;
-            return;
-        }
+        // auto device_file_name = findEventPathByJsNumber(req.joyDevice);
+        // if (!device_file_name.has_value()) {
+        //     std::cerr << "could not find events for device "
+        //               << req.joyDevice
+        //               << std::endl;
+        //     return;
+        // }
 
-        int fd = open(device_file_name->c_str(), O_RDWR);
-        if (fd == -1) {
-            std::cerr << "could not open "
-                      << *device_file_name
-                      << ": "
-                      << strerror(errno)
-                      << std::endl;
-            return;
-        }
+        // int fd = open(device_file_name->c_str(), O_RDWR);
+        // if (fd == -1) {
+        //     std::cerr << "could not open "
+        //               << *device_file_name
+        //               << ": "
+        //               << strerror(errno)
+        //               << std::endl;
+        //     return;
+        // }
         
-        std::cout << "Uploading effect..." << std::endl;
+        // std::cout << "Uploading effect..." << std::endl;
 
-        if (ioctl(fd, EVIOCSFF, &effect) == -1) {
-            std::cerr << "EVIOCSFF failed: "
-                      << strerror(errno)
-                      << std::endl;
-            close(fd);
-            return;
-        }
-        std::cout << "id=" << effect.id << '\n';
+        // if (ioctl(fd, EVIOCSFF, &effect) == -1) {
+        //     std::cerr << "EVIOCSFF failed: "
+        //               << strerror(errno)
+        //               << std::endl;
+        //     close(fd);
+        //     return;
+        // }
+        // std::cout << "id=" << effect.id << '\n';
 
-        event.code = effect.id;
-        event.value = 1;
+        // event.code = effect.id;
+        // event.value = 1;
 
-        if (write(fd, &event, sizeof(event)) == -1) {
-            std::cerr << "Failed to start rumble: "
-                      << strerror(errno)
-                      << std::endl;
-            ioctl(fd, EVIOCRMFF, effect.id);
-            close(fd);
-            return;
-        }
+        // if (write(fd, &event, sizeof(event)) == -1) {
+        //     std::cerr << "Failed to start rumble: "
+        //               << strerror(errno)
+        //               << std::endl;
+        //     ioctl(fd, EVIOCRMFF, effect.id);
+        //     close(fd);
+        //     return;
+        // }
 
         std::this_thread::sleep_for(
             std::chrono::milliseconds(req.duration)
         );
 
-        event.value = 0;
+        // event.value = 0;
 
-        if (write(fd, &event, sizeof(event)) == -1) {
-            std::cerr << "Failed to stop rumble: "
-                      << strerror(errno)
-                      << std::endl;
-        }
+        // if (write(fd, &event, sizeof(event)) == -1) {
+        //     std::cerr << "Failed to stop rumble: "
+        //               << strerror(errno)
+        //               << std::endl;
+        // }
 
-        ioctl(fd, EVIOCRMFF, effect.id);
-        close(fd);
+        // ioctl(fd, EVIOCRMFF, effect.id);
+        // close(fd);
         if (nullptr != callback) {
             callback();
         }

@@ -1,5 +1,5 @@
 
-#include "rumble-test.h"
+#include "haptic4j.h"
 #include "wrapper.h"
 
 extern "C" void rumble(HapticEvent* event) {

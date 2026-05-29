@@ -1,6 +1,3 @@
-// import java.lang.foreign.*;
-// import java.lang.invoke.MethodHandle;
-// import java.nio.file.Path;
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 import org.haptic4j.HapticEvent;
@@ -52,41 +49,4 @@ class Rumbler {
             wrapper_h.rumble(event);
         }
     }
-
-    // FFM way
-    // static {
-    //     SymbolLookup.libraryLookup(
-    //         Path.of(System.getProperty("user.dir"), "libwrapper.so"),
-    //         Arena.global()
-    //     );
-    // }
-    // private static final Linker LINKER = Linker.nativeLinker();
-    // private static final SymbolLookup LOOKUP = SymbolLookup.loaderLookup();
-    // private static final MethodHandle RUMBLE;
-
-    // static {
-    //     try {
-    //         MemorySegment symbol = LOOKUP.find("rumble").orElseThrow();
-
-    //         RUMBLE = LINKER.downcallHandle(
-    //                 symbol,
-    //                 FunctionDescriptor.ofVoid(
-    //                         JAVA_INT,
-    //                         JAVA_INT,
-    //                         JAVA_INT,
-    //                         JAVA_INT
-    //                 )
-    //         );
-    //     } catch (Throwable t) {
-    //         throw new RuntimeException(t);
-    //     }
-    // }
-
-    // public static void rumble(int joynum, int strong, int weak, int duration) {
-    //     try {
-    //         RUMBLE.invokeExact(joynum, strong, weak, duration );
-    //     } catch (Throwable t) {
-    //         throw new RuntimeException(t);
-    //     }
-    // }
 }
