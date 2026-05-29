@@ -153,6 +153,9 @@ class Rumbler {
 public:
 
     Rumbler() : thr([this](std::stop_token st) { run(st); }) {}
+
+    Rumbler(const Rumbler&) = delete;
+    Rumbler& operator=(const Rumbler&) = delete;
     
     ~Rumbler() {
         thr.request_stop();

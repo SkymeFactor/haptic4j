@@ -1,6 +1,6 @@
 
 #include "haptic4j.h"
-#include "wrapper.h"
+#include "Rumbler.h"
 
 extern "C" void rumble(HapticEvent* event) {
     auto& rumbler = get_rumbler();

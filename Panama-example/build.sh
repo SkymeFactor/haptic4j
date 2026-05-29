@@ -8,12 +8,12 @@ g++ -std=c++23 \
    -I $JAVA_HOME/include/linux \
    -shared \
    -o libhaptic4j.so \
-   wrapper.cpp
+   Rumbler.cpp
 
 jextract \
     --output generated \
     -t org.haptic4j \
     -l :./libhaptic4j.so \
-    "wrapper.h"
+    "Rumbler.h"
 javac generated/org/**/*.java -d classes
 javac -cp .:classes Rumbler.java UIController.java -d classes

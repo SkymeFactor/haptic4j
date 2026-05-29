@@ -1,6 +1,7 @@
 # User-defined
 generated/
 classes/
+.vscode
 
 # Prerequisites
 *.d
