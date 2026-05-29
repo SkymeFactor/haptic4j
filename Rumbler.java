@@ -1,21 +1,20 @@
 // import java.lang.foreign.*;
 // import java.lang.invoke.MethodHandle;
 // import java.nio.file.Path;
-import java.util.Scanner;
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
-
-// import static java.lang.foreign.ValueLayout.JAVA_INT;
-import org.haptic.wrapper_h;
-import org.haptic.HapticEvent;
+import org.haptic4j.HapticEvent;
+import org.haptic4j.wrapper_h;
 
 
 class Rumbler {
-    private final Scanner scanner = new Scanner(System.in);
-    private int joyDevice = 0;
-    private int strongMagnitude = 0x0000;
-    private int weakMagnitude = 0x0000;
-    private int durationMs = 0;
+    public class RumblerConfig {
+        public int joyDevice = 0;
+        public int strongMagnitude = 0x0000;
+        public int weakMagnitude = 0x0000;
+        public int durationMs = 0;
+    }
+    public RumblerConfig conf = new RumblerConfig();
 
     // Keep strong references so GC cannot collect them
     private static final Arena CALLBACK_ARENA = Arena.ofShared();
@@ -23,27 +22,23 @@ class Rumbler {
         new java.util.ArrayList<>();
 
     public static void main(String[] args) {
-        new Rumbler().run();
+        new UIController(new Rumbler()).run();
     }
 
-    static void callRumble(
-            int joyDevice,
-            int strongMagnitude,
-            int weakMagnitude,
-            int durationMs,
-            HapticEvent.callback.Function callback
-    ) {
+    public void callRumble() {
         try (Arena arena = Arena.ofConfined()) {
             // Allocate the struct
             MemorySegment event = HapticEvent.allocate(arena);
 
             // Set fields
-            HapticEvent.joyDevice(event, joyDevice);
-            HapticEvent.strong(event, strongMagnitude);
-            HapticEvent.weak(event, weakMagnitude);
-            HapticEvent.duration(event, durationMs);
+            HapticEvent.joyDevice(event, conf.joyDevice);
+            HapticEvent.strong(event, conf.strongMagnitude);
+            HapticEvent.weak(event, conf.weakMagnitude);
+            HapticEvent.duration(event, conf.durationMs);
 
             // Create callback stub from lambda
+            HapticEvent.callback.Function callback =
+                () -> System.out.println("Native code triggered callback");
             KEEP_ALIVE.add(callback);
             MemorySegment callbackStub = HapticEvent.callback.allocate(
                 callback,
@@ -57,106 +52,6 @@ class Rumbler {
             wrapper_h.rumble(event);
         }
     }
-
-    private void run() {
-        printHelp();
-        boolean running = true;
-        
-        while (running) {
-            System.out.print("\nEnter command: ");
-            String input = scanner.nextLine();
-            switch (input) {
-                case "1" -> printHelp();
-                case "2" -> selectJoyDevice();
-                case "3" -> setStrongMagnitude();
-                case "4" -> setWeakMagnitude();
-                case "5" -> setDuration();
-                case "6" -> callRumble(
-                                joyDevice,
-                                strongMagnitude,
-                                weakMagnitude,
-                                durationMs,
-                                () -> System.out.println("Native code triggered callback")
-                            );
-                case "0" -> running = false;
-                default -> System.out.println("Unknown command.");
-            }
-        }
-        System.out.println("Exiting.");
-    }
-
-    private void printHelp() {
-        System.out.println("==== Rumblin Commands ====");
-        System.out.println("1 - Show help");
-        System.out.println("2 - Select joy device");
-        System.out.println("3 - Set strong magnitude");
-        System.out.println("4 - Set weak magnitude");
-        System.out.println("5 - Set duration");
-        System.out.println("6 - Execute rumble");
-        System.out.println("0 - Exit");
-
-        System.out.println("\nCurrent configuration:");
-        printCurrentConfig();
-    }
-
-    private void printCurrentConfig() {
-        System.out.println("Device   : " + joyDevice);
-        System.out.println("Strong   : " + strongMagnitude);
-        System.out.println("Weak     : " + weakMagnitude);
-        System.out.println("Duration : " + durationMs + " ms");
-    }
-
-    private void selectJoyDevice() {
-        System.out.print("Enter joy device number: ");
-
-        try {
-            joyDevice = Integer.parseInt(scanner.nextLine());
-            System.out.println("Device set to: " + joyDevice);
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid number.");
-        }
-    }
-
-    private void setStrongMagnitude() {
-        System.out.print("Enter strong magnitude (0-65535): ");
-
-        try {
-            strongMagnitude = Integer.parseInt(scanner.nextLine());
-            System.out.println("Strong magnitude set to: " + strongMagnitude);
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid number.");
-        }
-    }
-
-    private void setWeakMagnitude() {
-        System.out.print("Enter weak magnitude (0-65535): ");
-
-        try {
-            weakMagnitude = Integer.parseInt(scanner.nextLine());
-            System.out.println("Weak magnitude set to: " + weakMagnitude);
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid number.");
-        }
-    }
-
-    private void setDuration() {
-        System.out.print("Enter duration in milliseconds: ");
-
-        try {
-            durationMs = Integer.parseInt(scanner.nextLine());
-            System.out.println("Duration set to: " + durationMs + " ms");
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid number.");
-        }
-    }
-    
-    // JNI way
-    // Define native functions
-    // static {
-    //     System.loadLibrary("wrapper");
-    // }
-
-    // public static native void rumble(int joynum, int strong, int weak, int duration);
 
     // FFM way
     // static {
