@@ -1,7 +1,7 @@
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 import org.haptic4j.HapticEvent;
-import org.haptic4j.wrapper_h;
+import org.haptic4j.Rumbler_h;
 
 
 class Rumbler {
@@ -46,7 +46,7 @@ class Rumbler {
             // Assign callback pointer into struct
             HapticEvent.callback(event, callbackStub);
             
-            wrapper_h.rumble(event);
+            Rumbler_h.rumble(event);
         }
     }
 }
